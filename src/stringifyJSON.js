@@ -3,66 +3,55 @@
 
 // but you don't so you're going to write it from scratch:
 
-var stringifyJSON = function(obj, index) {
-
-
+var stringifyJSON = function (obj, index) {
   if (obj == null) {
-
-    return "null"
-
+    return 'null'
   }
-
   var stringObj = toString.call(obj);
-
   var result = toString.call(obj);
 
   if (stringObj == '[object String]') {
     return '"' + obj + '"'
   }
-
   index = index || 0
-
   if (stringObj == '[object Array]') {
     if (index >= obj.length) {
-      return "[]"
+      return '[]'
     }
-
-  result = stringifyJSON(obj[index]);
-
-  if (index < obj.length - 1) {
-    result = result + "," + stringifyJSON(obj, index + 1);
-  }
-
-  if (index === 0) {
-    return "[" + result + "]"
-  }
-
-  return result;
-  }
-
-  if (obj === Object(obj)) {
-    var keys = Object.keys(obj);
-    var key = keys[index];
-
-    if (key === undefined) {
-      return "{}"
+    result = stringifyJSON(obj[index]);
+    if (index < obj.length - 1) {
+      result = result + ',' + stringifyJSON(obj, index + 1);
     }
-
-    result = stringifyJSON(key) + ':' + stringifyJSON(obj[key]);
-
-    if (index < keys.length - 1) {
-      return result + "," + stringifyJSON(obj, index + 1);
-    }
-
     if (index === 0) {
-      return "{" + result + "}"
+      return '[' + result + ']'
     }
-
     return result;
   }
 
 
+  if (obj === Object(obj)) {
+    var keys = Object.keys(obj);
+    var key = keys[index];
+    var keyValue = obj[key]
+    
+    if (key === undefined || toString.call(keyValue) == '[object Function]') {
+      return '{}'
+    }
 
-return obj.toString();
 
+    if (index === 0) {
+      result = '{' + stringifyJSON(key) + ':' + stringifyJSON(obj[key]);
+    } else {
+      result = '' + stringifyJSON(key) + ':' + stringifyJSON(obj[key]);
+    }
+    if (index < keys.length - 1) {
+      return result + ',' + stringifyJSON(obj, index + 1);
+    }
+    else {
+
+      return result + '}'
+    }
+    return result;
+  }
+  return obj.toString();
 };
